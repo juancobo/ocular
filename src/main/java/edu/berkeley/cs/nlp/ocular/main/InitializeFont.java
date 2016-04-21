@@ -34,13 +34,13 @@ public class InitializeFont extends OcularRunnable {
 
 	@Option(gloss = "Output font file path.")
 	public static String outputFontPath = null; // Required.
-	
+
 	@Option(gloss = "Path to a file that contains a custom list of font names that may be used to initialize the font. The file should contain one font name per line. Default: Use all valid fonts found on the computer.")
 	public static String allowedFontsPath = null;
-	
+
 	@Option(gloss = "Number of threads to use.")
 	public static int numFontInitThreads = 8;
-	
+
 	@Option(gloss = "Max template width as fraction of text line height.")
 	public static double templateMaxWidthFraction = 1.0;
 
@@ -52,14 +52,14 @@ public class InitializeFont extends OcularRunnable {
 
 	@Option(gloss = "Min space template width as fraction of text line height.")
 	public static double spaceMinWidthFraction = 0.0;
-	
-	
-	public void main(String[] args) {
+
+
+	public static void main(String[] args) {
 		System.out.println("InitializeFont");
 		InitializeFont main = new InitializeFont();
 		main.doMain(main, args);
 	}
-	
+
 	protected void validateOptions() {
 		if (inputLmPath == null) throw new IllegalArgumentException("-lmPath not set");
 		if (outputFontPath == null) throw new IllegalArgumentException("-fontPath not set");
@@ -67,7 +67,7 @@ public class InitializeFont extends OcularRunnable {
 
 	public void run() {
 		Set<String> allowedFonts = getAllowedFontsListFromFile();
-		
+
 		final LanguageModel lm = InitializeLanguageModel.readLM(inputLmPath);
 		final Indexer<String> charIndexer = lm.getCharacterIndexer();
 		final CharacterTemplate[] templates = new CharacterTemplate[charIndexer.size()];
@@ -106,7 +106,7 @@ public class InitializeFont extends OcularRunnable {
 		}
 		return allowedFonts;
 	}
-	
+
 //	private static PixelType[][][] buildFAndBarFontPixelData(Indexer<String> charIndexer, PixelType[][][][] fontPixelData) {
 //		List<PixelType[][]> fAndBarFontPixelData = new ArrayList<PixelType[][]>();
 //		if (charIndexer.contains("f")) {
@@ -123,7 +123,7 @@ public class InitializeFont extends OcularRunnable {
 //		}
 //		return fAndBarFontPixelData.toArray(new PixelType[0][][]);
 //	}
-	
+
 	public static Font readFont(String fontPath) {
 		ObjectInputStream in = null;
 		try {
@@ -135,10 +135,10 @@ public class InitializeFont extends OcularRunnable {
 			Object obj = in.readObject();
 
 			{ // TODO: For legacy font models...
-				if (obj instanceof Map<?, ?>) 
+				if (obj instanceof Map<?, ?>)
 					return new Font((Map<String, CharacterTemplate>)obj);
 			}
-			
+
 			return (Font) obj;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
